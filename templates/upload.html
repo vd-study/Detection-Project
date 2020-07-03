@@ -1,0 +1,86 @@
+<html>
+<head>
+<style type="text/css">
+#file-picker {
+  text-align: center;
+  margin: auto;
+}
+div#loading {
+	display: none;
+	text-align: center;
+}
+video#showReelVid{
+    width: 512px;
+    height: 508px;
+}
+</style>
+<title>D.P.-Detection Project</title>
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+	<div class="row">
+		<div class="col-lg-12">
+            <h1 class="page-header" align="center" id="h1_text">Выберете фотографию</h1>
+        </div>
+		<div id="loading">
+            <video poster="" id="showReelVid" webkit-playsinline="true" playsinline="true" muted autoplay loop preload>
+                <source src="/static/video.mp4" type="video/mp4">
+                Your browser does not support HTML5 video :(.
+            </video>
+        </div>
+		<form id="upload-form" align="center" action="{{ url_for('upload_file_get') }}" method="POST" enctype="multipart/form-data">
+			<input id="file-picker" type="file" onChange="preview_2(this);" name="file">
+			<br>
+			<img id="imagenFondo" align="center" style="height: 300px;width: 300px;">
+			<br>
+			<div></div>
+			<br>
+			<input type="submit" align="center" value="Проанализировать фотографию" id="upload-button" onclick="loading();">
+		</form>
+	</div>
+</div>
+</body>
+<script>
+	var outImage ="imagenFondo";
+	function preview_2(obj){
+		if (FileReader){
+			var reader = new FileReader();
+			reader.readAsDataURL(obj.files[0]);
+			reader.onload = function (e) {
+			var image=new Image();
+			image.src=e.target.result;
+			image.onload = function () {
+			document.getElementById(outImage).src=image.src;
+			};
+			}
+		}
+	}
+
+</script>
+<script type="text/javascript">// <![CDATA[
+        function loading(){
+            var input = document.getElementById('file-picker');
+
+            for (var i=0; i<input.files.length; i++){
+                //koala.jpg, koala.JPG substring(index) lastIndexOf('a') koala.1.jpg
+                var ext= input.files[i].name.substring(input.files[i].name.lastIndexOf('.')+1).toLowerCase()
+
+                if ((ext == 'jpg') || (ext == 'png') || (ext == 'jpeg')){
+                    $("#loading").show();
+                    $("#upload-form").hide();
+			        var h1_text = document.getElementById("h1_text")
+			        h1_text.innerHTML = "Экранизация работы нейронной сети";
+			        var showReelVid = document.getElementById("showReelVid");
+			        showReelVid.play();
+
+                }
+                else{
+                    //NOTHING
+                }
+            }
+        }
+// ]]></script>
+</html>
